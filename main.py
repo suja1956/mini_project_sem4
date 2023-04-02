@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import filedialog,messagebox
 import random
 import time
+from twilio.rest import Client
 import requests
 
 #Functions
@@ -58,15 +59,15 @@ def reset():
     textfaluda.config(state=DISABLED)
     textcolddrinks.config(state=DISABLED)
 
-    textoreo.config(state=DISABLED)
-    textapple.config(state=DISABLED)
-    textkitkat.config(state=DISABLED)
-    textvanilla.config(state=DISABLED)
-    textbanana.config(state=DISABLED)
-    textbrownie.config(state=DISABLED)
-    textpineapple.config(state=DISABLED)
-    textchocolate.config(state=DISABLED)
-    textblackforest.config(state=DISABLED)
+    # textoreo.config(state=DISABLED)
+    # textapple.config(state=DISABLED)
+    # textkitkat.config(state=DISABLED)
+    # textvanilla.config(state=DISABLED)
+    # textbanana.config(state=DISABLED)
+    # textbrownie.config(state=DISABLED)
+    # textpineapple.config(state=DISABLED)
+    # textchocolate.config(state=DISABLED)
+    # textblackforest.config(state=DISABLED)
 
     var1.set(0)
     var2.set(0)
@@ -111,28 +112,21 @@ def send():
         pass
     else:
         def send_msg():
-            message=textarea.get(1.0,END)
-            number=numberfield.get()
-            auth='woVHAjOGldMsPhnT7gS6XRIi4cYr0ym3FZkEWfKv9Qxauq8J2DHDWus7AqZKnkeXlVzQJa3fIRrp925S'
-            url='https://www.fast2sms.com/dev/bulk'
-
-            params={
-                'authorization':auth,
-                'message':message,
-                'numbers':number,
-                'sender-id':'FSTSMS',
-                'route':'p',
-                'language':'english'
-            }
-            response=requests.get(url,params=params)
-            dic=response.json()
-            result=dic.get('return')
-            if result==True:
-                messagebox.showinfo('Send Successfully','Message sent succesfully')
-
+            phone_number = numberfield.get()
+            if len(phone_number) != 10 or not phone_number.isdigit():
+                messagebox.showinfo("Error", "Invalid phone number. Please enter a 10-digit phone number.")
             else:
-                messagebox.showerror('Error','Something went wrong')
-
+                messagebox.showinfo('Send Successfully', 'Message sent succesfully')
+                message = textarea.get(1.0, END)
+                account_sid = "ACcc49f5c46b96d9df1558d4076d45d319"
+                auth_token = "c81d67987c1d78b7e0166d42202b045e"
+                client = Client(account_sid, auth_token)
+                message = client.messages.create(
+                    body=f"{message}",
+                    from_="+15855221576",
+                    to="+919892385514"
+                )
+                print(message.sid)
         root2=Toplevel()
 
         root2.title("Send Bill")
